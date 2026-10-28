@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DiaGuard AI — Clinical Diabetes Risk Prediction & Analytics</title>
+    <meta name="description" content="State-of-the-art Diabetes Risk Prediction platform using Supervised Machine Learning on the Kaggle Pima Indians Diabetes Dataset. Complete with in-depth EDA and multi-algorithm evaluation.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <!-- Background Ambient Glow -->
+    <div class="ambient-glow glow-1"></div>
+    <div class="ambient-glow glow-2"></div>
+    <div class="ambient-glow glow-3"></div>
+
+    <!-- Navigation Header -->
+    <header class="app-header">
+        <div class="header-container">
+            <div class="brand">
+                <div class="brand-icon">
+                    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="brand-title">DiaGuard<span class="highlight">.AI</span></h1>
+                    <span class="brand-badge">Supervised ML Clinical System</span>
+                </div>
+            </div>
+
+            <nav class="nav-links">
+                <a href="#predict-section" class="nav-item active">Predictor</a>
+                <a href="#eda-section" class="nav-item">EDA Insights</a>
+                <a href="#models-section" class="nav-item">Model Benchmark</a>
+                <a href="#dataset-section" class="nav-item">Kaggle Dataset</a>
+                <a href="/download/dataset" class="btn-download" id="btn-download-csv">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+                    </svg>
+                    Download CSV
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="hero-badge">
+                <span class="pulsing-dot"></span>
+                Trained on Kaggle Pima Indians Database &bull; 7 Supervised Models
+            </div>
+            <h2 class="hero-title">Diabetes Risk Prediction <span class="gradient-text">Engine</span></h2>
+            <p class="hero-subtitle">
+                Comprehensive machine learning platform implementing end-to-end clinical Exploratory Data Analysis, missing value imputation, and ensemble classification for early diabetes risk detection.
+            </p>
+
+            <!-- Quick Stat Pill Bar -->
+            <div class="stat-pills">
+                <div class="stat-pill">
+                    <span class="stat-num">768</span>
+                    <span class="stat-label">Patient Cohort</span>
+                </div>
+                <div class="stat-pill">
+                    <span class="stat-num">8</span>
+                    <span class="stat-label">Clinical Features</span>
+                </div>
+                <div class="stat-pill">
+                    <span class="stat-num">82.1%</span>
+                    <span class="stat-label">Best ROC-AUC</span>
+                </div>
+                <div class="stat-pill">
+                    <span class="stat-num">7</span>
+                    <span class="stat-label">Algorithms Evaluated</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Predictor Section -->
+        <section id="predict-section" class="section-card">
+            <div class="section-header">
+                <div>
+                    <span class="section-tag">Interactive Clinical Assessment</span>
+                    <h3 class="section-title">Patient Risk Predictor</h3>
+                </div>
+                <!-- Profile Presets -->
+                <div class="profile-presets">
+                    <span class="preset-label">Test Case Presets:</span>
+                    <button type="button" class="btn-preset" data-preset="healthy">Healthy Profile</button>
+                    <button type="button" class="btn-preset" data-preset="borderline">Borderline Risk</button>
+                    <button type="button" class="btn-preset" data-preset="diabetic">High Risk Profile</button>
+                </div>
+            </div>
+
+            <div class="predictor-grid">
+                <!-- Input Form -->
+                <form id="prediction-form" class="form-container">
+                    <div class="model-select-wrapper">
+                        <label for="model-selector" class="field-label">
+                            <span>Supervised Model Engine:</span>
+                            <span class="badge-recommended">Random Forest Recommended</span>
+                        </label>
+                        <select id="model-selector" class="custom-select">
+                            {% for m in models %}
+                            <option value="{{ m }}" {% if m == default_model %}selected{% endif %}>{{ m }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="inputs-grid">
+                        <!-- Glucose -->
+                        <div class="input-card" id="card-glucose">
+                            <div class="input-head">
+                                <label for="glucose-input" class="input-title">Glucose (mg/dL)</label>
+                                <span class="input-val-badge" id="glucose-badge">120 mg/dL</span>
+                            </div>
+                            <p class="input-helper">2-hour oral glucose tolerance test</p>
+                            <input type="range" id="glucose-input" min="40" max="200" step="1" value="120" class="styled-range">
+                            <div class="range-scale">
+                                <span>Normal (&lt;100)</span>
+                                <span>Prediabetes (100-139)</span>
+                                <span>Diabetes (&ge;140)</span>
+                            </div>
+                        </div>
+
+                        <!-- BMI -->
+                        <div class="input-card" id="card-bmi">
+                            <div class="input-head">
+                                <label for="bmi-input" class="input-title">BMI (kg/m²)</label>
+                                <span class="input-val-badge" id="bmi-badge">28.5 kg/m²</span>
+                            </div>
+                            <p class="input-helper">Body Mass Index (Weight/Height²)</p>
+                            <input type="range" id="bmi-input" min="15.0" max="55.0" step="0.1" value="28.5" class="styled-range">
+                            <div class="range-scale">
+                                <span>Normal (18.5-24.9)</span>
+                                <span>Overweight (25-29.9)</span>
+                                <span>Obese (&ge;30)</span>
+                            </div>
+                        </div>
+
+                        <!-- Age -->
+                        <div class="input-card">
+                            <div class="input-head">
+                                <label for="age-input" class="input-title">Age (Years)</label>
+                                <span class="input-val-badge" id="age-badge">33 yrs</span>
+                            </div>
+                            <p class="input-helper">Chronological age in years</p>
+                            <input type="range" id="age-input" min="21" max="85" step="1" value="33" class="styled-range">
+                            <div class="range-scale">
+                                <span>Young Adult (21-35)</span>
+                                <span>Mid-Adult (36-50)</span>
+                                <span>Senior (&gt;50)</span>
+                            </div>
+                        </div>
+
+                        <!-- Insulin -->
+                        <div class="input-card">
+                            <div class="input-head">
+                                <label for="insulin-input" class="input-title">Insulin (µU/mL)</label>
+                                <span class="input-val-badge" id="insulin-badge">85 µU/mL</span>
+                            </div>
+                            <p class="input-helper">2-Hour serum insulin measurement</p>
+                            <input type="range" id="insulin-input" min="0" max="400" step="1" value="85" class="styled-range">
+                            <div class="range-scale">
+                                <span>Missing/Zero (0)</span>
+                                <span>Normal (16-166)</span>
+                                <span>High (&gt;166)</span>
+                            </div>
+                        </div>
+
+                        <!-- Blood Pressure -->
+                        <div class="input-card">
+                            <div class="input-head">
+                                <label for="bp-input" class="input-title">Blood Pressure (mm Hg)</label>
+                                <span class="input-val-badge" id="bp-badge">72 mm Hg</span>
+                            </div>
+                            <p class="input-helper">Diastolic blood pressure</p>
+                            <input type="range" id="bp-input" min="40" max="130" step="1" value="72" class="styled-range">
+                            <div class="range-scale">
+                                <span>Optimal (&lt;80)</span>
+                                <span>Stage 1 (80-89)</span>
+                                <span>Stage 2 (&ge;90)</span>
+                            </div>
+                        </div>
+
+                        <!-- Pregnancies -->
+                        <div class="input-card">
+                            <div class="input-head">
+                                <label for="pregnancies-input" class="input-title">Pregnancies</label>
+                                <span class="input-val-badge" id="pregnancies-badge">2</span>
+                            </div>
+                            <p class="input-helper">Number of times pregnant</p>
+                            <input type="range" id="pregnancies-input" min="0" max="15" step="1" value="2" class="styled-range">
+                            <div class="range-scale">
+                                <span>0</span>
+                                <span>5</span>
+                                <span>10+</span>
+                            </div>
+                        </div>
+
+                        <!-- Skin Thickness -->
+                        <div class="input-card">
+                            <div class="input-head">
+                                <label for="skin-input" class="input-title">Skin Thickness (mm)</label>
+                                <span class="input-val-badge" id="skin-badge">26 mm</span>
+                            </div>
+                            <p class="input-helper">Triceps skin fold thickness</p>
+                            <input type="range" id="skin-input" min="0" max="65" step="1" value="26" class="styled-range">
+                            <div class="range-scale">
+                                <span>0 (Imputed)</span>
+                                <span>Average (~23)</span>
+                                <span>High (&gt;40)</span>
+                            </div>
+                        </div>
+
+                        <!-- Diabetes Pedigree Function -->
+                        <div class="input-card">
+                            <div class="input-head">
+                                <label for="pedigree-input" class="input-title">Pedigree Function</label>
+                                <span class="input-val-badge" id="pedigree-badge">0.38</span>
+                            </div>
+                            <p class="input-helper">Genetic hereditary score</p>
+                            <input type="range" id="pedigree-input" min="0.05" max="2.0" step="0.01" value="0.38" class="styled-range">
+                            <div class="range-scale">
+                                <span>Low (&lt;0.3)</span>
+                                <span>Moderate (0.3-0.7)</span>
+                                <span>High (&gt;0.7)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-predict-cta" id="btn-run-prediction">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2">
+                            <polygon points="5 3 19 12 5 21 5 3"/>
+                        </svg>
+                        Compute Risk Assessment
+                    </button>
+                </form>
+
+                <!-- Output Panel -->
+                <div class="result-container" id="prediction-output">
+                    <div class="result-header">
+                        <h4>Diagnostic Output</h4>
+                        <span class="engine-badge" id="result-engine">Random Forest</span>
+                    </div>
+
+                    <div class="gauge-wrapper">
+                        <div class="circular-gauge" id="risk-gauge" style="--risk-pct: 28%; --gauge-color: #10b981;">
+                            <div class="gauge-inner">
+                                <span class="gauge-value" id="risk-percent">28.0%</span>
+                                <span class="gauge-subtitle">Risk Probability</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="risk-status-pill" id="risk-status" style="background: rgba(16, 185, 129, 0.15); color: #10b981; border-color: rgba(16, 185, 129, 0.3);">
+                        <span class="status-dot"></span>
+                        <span id="risk-category-text">Low Risk Classification</span>
+                    </div>
+
+                    <div class="result-card">
+                        <h5>Contributing Clinical Drivers</h5>
+                        <ul class="factors-list" id="factors-list">
+                            <li class="factor-item">
+                                <span class="factor-badge positive">Optimal</span>
+                                <div>
+                                    <strong>Balanced Glucose & BMI:</strong>
+                                    <span>Physiological markers are within normal clinical thresholds.</span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="result-card">
+                        <h5>Clinical Guidance & Next Steps</h5>
+                        <p class="guidance-text" id="guidance-text">
+                            Clinical metrics are predominantly within standard physiological ranges. Maintain an active lifestyle and schedule standard routine annual health checkups.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- EDA Section -->
+        <section id="eda-section" class="section-card">
+            <div class="section-header">
+                <div>
+                    <span class="section-tag">Exploratory Data Analysis</span>
+                    <h3 class="section-title">Dataset Characteristics & Visual Insights</h3>
+                </div>
+                <div class="eda-tabs">
+                    <button class="eda-tab active" data-img="/static/plots/01_target_distribution.png" data-desc="Distribution of Target Outcome showing 500 Non-Diabetic (65.1%) and 268 Diabetic (34.9%) records.">Target Class</button>
+                    <button class="eda-tab" data-img="/static/plots/02_feature_distributions.png" data-desc="Feature histograms with kernel density estimation (KDE) split by diabetic outcome.">Feature Dist</button>
+                    <button class="eda-tab" data-img="/static/plots/03_correlation_matrix.png" data-desc="Pearson correlation heatmap indicating Glucose (+0.47) and BMI (+0.29) as dominant predictors.">Correlations</button>
+                    <button class="eda-tab" data-img="/static/plots/04_glucose_bmi_scatter.png" data-desc="Risk landscape plotting Plasma Glucose vs BMI with clinical impairment and obesity boundaries.">Glucose vs BMI</button>
+                    <button class="eda-tab" data-img="/static/plots/05_boxplots_by_outcome.png" data-desc="Boxplot comparison illustrating interquartile ranges and outlier distributions for each feature.">Boxplots</button>
+                </div>
+            </div>
+
+            <div class="eda-content-grid">
+                <div class="eda-image-frame">
+                    <img id="eda-active-img" src="/static/plots/01_target_distribution.png" alt="EDA Chart" class="eda-display-img">
+                    <div class="eda-caption" id="eda-caption-text">
+                        Distribution of Target Outcome showing 500 Non-Diabetic (65.1%) and 268 Diabetic (34.9%) records.
+                    </div>
+                </div>
+
+                <div class="eda-findings-sidebar">
+                    <h4>Key EDA Clinical Takeaways</h4>
+                    <div class="finding-card">
+                        <div class="finding-icon">🔍</div>
+                        <div>
+                            <h6>Biologically Invalid Zeros</h6>
+                            <p>Insulin (48.7%), SkinThickness (29.6%), and Glucose/BMI exhibit zero values representing missing clinical data, necessitating rigorous median imputation.</p>
+                        </div>
+                    </div>
+
+                    <div class="finding-card">
+                        <div class="finding-icon">🩸</div>
+                        <div>
+                            <h6>Glucose Primacy</h6>
+                            <p>2-Hour Plasma Glucose exhibits the highest individual correlation (r = +0.467) with diabetes manifestation, showing significant separation between classes.</p>
+                        </div>
+                    </div>
+
+                    <div class="finding-card">
+                        <div class="finding-icon">⚖️</div>
+                        <div>
+                            <h6>BMI & Metabolic Syndrome</h6>
+                            <p>BMI (r = +0.293) and Age (r = +0.238) demonstrate compounding risk: patients with BMI &gt; 30 and age &gt; 35 show more than triple the diabetes incidence.</p>
+                        </div>
+                    </div>
+
+                    <div class="finding-card">
+                        <div class="finding-icon">🧬</div>
+                        <div>
+                            <h6>Pedigree & Heredity</h6>
+                            <p>Diabetes Pedigree Function demonstrates non-linear escalation of risk, especially when coupled with elevated postprandial glucose.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Model Benchmark Section -->
+        <section id="models-section" class="section-card">
+            <div class="section-header">
+                <div>
+                    <span class="section-tag">Supervised Learning Benchmarks</span>
+                    <h3 class="section-title">Comparative Model Performance (5-Fold CV & Test Set)</h3>
+                </div>
+                <div class="eda-tabs">
+                    <button class="model-tab active" data-img="/static/plots/06_model_comparison_metrics.png">Metrics Comparison</button>
+                    <button class="model-tab" data-img="/static/plots/07_roc_curves.png">ROC Curves</button>
+                    <button class="model-tab" data-img="/static/plots/08_confusion_matrices.png">Confusion Matrices</button>
+                    <button class="model-tab" data-img="/static/plots/09_feature_importances.png">Feature Importances</button>
+                </div>
+            </div>
+
+            <!-- Model Benchmark Table -->
+            <div class="table-wrapper">
+                <table class="benchmark-table">
+                    <thead>
+                        <tr>
+                            <th>Supervised Algorithm</th>
+                            <th>Accuracy</th>
+                            <th>Precision</th>
+                            <th>Recall (Sensitivity)</th>
+                            <th>Specificity</th>
+                            <th>F1-Score</th>
+                            <th>ROC-AUC</th>
+                            <th>5-Fold CV AUC</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for name, m in metrics.items() %}
+                        <tr {% if name == default_model %}class="highlight-row"{% endif %}>
+                            <td>
+                                <strong>{{ name }}</strong>
+                                {% if name == default_model %}<span class="badge-best">Top Model</span>{% endif %}
+                            </td>
+                            <td>{{ (m.accuracy * 100) | round(2) }}%</td>
+                            <td>{{ (m.precision * 100) | round(2) }}%</td>
+                            <td>{{ (m.recall * 100) | round(2) }}%</td>
+                            <td>{{ (m.specificity * 100) | round(2) }}%</td>
+                            <td>{{ m.f1_score }}</td>
+                            <td><strong>{{ m.roc_auc }}</strong></td>
+                            <td>{{ m.cv_auc_mean }} &plusmn; {{ m.cv_auc_std }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="model-eval-display">
+                <img id="model-active-img" src="/static/plots/06_model_comparison_metrics.png" alt="Model Evaluation Plot" class="eda-display-img">
+            </div>
+        </section>
+
+        <!-- Kaggle Dataset Section -->
+        <section id="dataset-section" class="section-card">
+            <div class="section-header">
+                <div>
+                    <span class="section-tag">Dataset Inspection</span>
+                    <h3 class="section-title">Pima Indians Diabetes Database (Kaggle)</h3>
+                </div>
+                <a href="/download/dataset" class="btn-download">
+                    Download Original CSV (768 rows)
+                </a>
+            </div>
+
+            <p class="dataset-intro">
+                Originally from the National Institute of Diabetes and Digestive and Kidney Diseases (NIDDK), this dataset is hosted on Kaggle and contains diagnostic measurements from female patients of Pima Indian heritage.
+            </p>
+
+            <div class="table-wrapper">
+                <table class="benchmark-table sample-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Pregnancies</th>
+                            <th>Glucose</th>
+                            <th>BloodPressure</th>
+                            <th>SkinThickness</th>
+                            <th>Insulin</th>
+                            <th>BMI</th>
+                            <th>Pedigree</th>
+                            <th>Age</th>
+                            <th>Outcome</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in sample_records %}
+                        <tr>
+                            <td>{{ loop.index }}</td>
+                            <td>{{ row.Pregnancies }}</td>
+                            <td><strong>{{ row.Glucose }}</strong></td>
+                            <td>{{ row.BloodPressure }}</td>
+                            <td>{{ row.SkinThickness }}</td>
+                            <td>{{ row.Insulin }}</td>
+                            <td>{{ row.BMI }}</td>
+                            <td>{{ row.DiabetesPedigreeFunction }}</td>
+                            <td>{{ row.Age }}</td>
+                            <td>
+                                {% if row.Outcome == 1 %}
+                                <span class="pill-diabetic">Diabetic (1)</span>
+                                {% else %}
+                                <span class="pill-normal">Normal (0)</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+        <div class="footer-container">
+            <div>
+                <strong>DiaGuard AI</strong> &bull; Supervised Machine Learning Diabetes Risk Prediction System
+            </div>
+            <div class="footer-meta">
+                Python 3.11 &bull; Scikit-Learn &bull; Kaggle Pima Indians Database &bull; REST API Enabled
+            </div>
+        </div>
+    </footer>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,78 @@
+{
+    "dataset_name": "Pima Indians Diabetes Database (Kaggle)",
+    "sample_count": 768,
+    "feature_count": 8,
+    "target_column": "Outcome",
+    "class_distribution": {
+        "non_diabetic": 500,
+        "diabetic": 268,
+        "diabetic_ratio": 34.9
+    },
+    "missing_zeros_summary": {
+        "Glucose": {
+            "count": 5,
+            "percentage": 0.65
+        },
+        "BloodPressure": {
+            "count": 35,
+            "percentage": 4.56
+        },
+        "SkinThickness": {
+            "count": 227,
+            "percentage": 29.56
+        },
+        "Insulin": {
+            "count": 374,
+            "percentage": 48.7
+        },
+        "BMI": {
+            "count": 11,
+            "percentage": 1.43
+        }
+    },
+    "correlations_with_outcome": {
+        "Outcome": 1.0,
+        "Glucose": 0.4666,
+        "BMI": 0.2927,
+        "Age": 0.2384,
+        "Pregnancies": 0.2219,
+        "DiabetesPedigreeFunction": 0.1738,
+        "Insulin": 0.1305,
+        "SkinThickness": 0.0748,
+        "BloodPressure": 0.0651
+    },
+    "feature_means_by_outcome": {
+        "Pregnancies": {
+            "non_diabetic": 3.3,
+            "diabetic": 4.87
+        },
+        "Glucose": {
+            "non_diabetic": 109.98,
+            "diabetic": 141.26
+        },
+        "BloodPressure": {
+            "non_diabetic": 68.18,
+            "diabetic": 70.82
+        },
+        "SkinThickness": {
+            "non_diabetic": 19.66,
+            "diabetic": 22.16
+        },
+        "Insulin": {
+            "non_diabetic": 68.79,
+            "diabetic": 100.34
+        },
+        "BMI": {
+            "non_diabetic": 30.3,
+            "diabetic": 35.14
+        },
+        "DiabetesPedigreeFunction": {
+            "non_diabetic": 0.43,
+            "diabetic": 0.55
+        },
+        "Age": {
+            "non_diabetic": 31.19,
+            "diabetic": 37.07
+        }
+    }
+}
